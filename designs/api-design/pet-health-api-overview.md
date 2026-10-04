@@ -1,21 +1,19 @@
 # Pet Health Tracker — API Design Overview
 
-The source of truth for the API is `pet-health-api_V1.0.1.yaml` (OpenAPI 3.0.3), which is already YAML.
-This file turns the **wireframe → endpoint PNGs** into Mermaid and summarises the YAML so you can compare them.
+The source of truth for the API is `pet-health-api.yaml` (OpenAPI 3.0.3), which is already YAML.
+This file shows the UI flow, example payloads and schemas as diagrams. It matches the YAML.
 
-## 1. UI flow → endpoints (from the REST API PNGs, as drawn)
-
-Paths and payloads are copied exactly as they appear in the images, typos included. They're compared against the YAML in the consistency report.
+## 1. UI flow → endpoints
 
 ```mermaid
 flowchart LR
-    login([User logs in]) -->|"GET /pets"| dash[Dashboard<br/>My Pets]
-    dash -->|"GET /pet/{pet_id}"| profile[Pet Profile]
+    open([App opens]) -->|"GET /pets"| dash[Dashboard<br/>My Pets]
+    dash -->|"GET /pets/{id}"| profile[Pet Profile]
     dash -->|"Add a pet → POST /pets"| addPet[Add Pet form]
 
     profile -->|"GET /pets/{pet_id}/health_record"| hrList[Health Records list]
     profile -->|"GET /pets/{pet_id}/medication"| medList[Medications list]
-    profile -->|"GET /pet/{pet_id}/appointment"| apptList[Appointments list]
+    profile -->|"GET /pets/{pet_id}/appointment"| apptList[Appointments list]
 
     hrList -->|"+ Add → POST /pets/{pet_id}/health_record"| addHr[Add Health Record form]
     hrList -->|Edit| editHr[Edit Health Record form]
@@ -23,30 +21,34 @@ flowchart LR
     hrList -->|"Delete → DELETE /pets/{pet_id}/health_record/{record_id}"| hrList
 ```
 
-### Request bodies shown in the PNGs
+Medications and appointments follow the same add / edit / delete pattern as health records.
+
+### Example request bodies
 
 ```yaml
-# POST /pets   (REST API_add a pet.png)
+# POST /pets
 name: Maru
 species: Dog
 breed: Maltipoo
-"birth date": { year: 2022, month: 11, day: 12 }
-weight: 10
+birthDate: "2022-11-12"
+weight: 10            # lb
+gender: MALE
+spayedNeutered: true
 
-# POST /pets/{pet_id}/health_record   (REST API_add health record.png)
-"record date": { year: 2026, month: 8, day: 15 }
-"record type": Check-up
-"clinic name": A Niu
-Notes: Lorem ipsum dolor sit amet
+# POST /pets/{pet_id}/health_record
+recordDate: "2026-08-15"
+recordType: CHECK_UP  # UI label "Check-up"
+clinicName: A Niu
+notes: Lorem ipsum dolor sit amet
 
-# PUT /pets/{pet_id}/health_record/{record_id}   (REST API_edit-delete health record.png)
-"record date": { year: 2025, month: 9, day: 28 }
-"record type": Other
-"clinic name": Burquitlam Animal Hospital
-Notes: Lorem ipsum dolor sit amet
+# PUT /pets/{pet_id}/health_record/{record_id}
+recordDate: "2025-09-28"
+recordType: OTHER
+clinicName: Burquitlam Animal Hospital
+notes: Lorem ipsum dolor sit amet
 ```
 
-### Status codes (CRUD endpoints status code.png)
+### Status codes
 
 | Situation | Code |
 |---|---|
@@ -57,7 +59,7 @@ Notes: Lorem ipsum dolor sit amet
 | Bad / invalid data | 400 |
 | GET/PUT/DELETE on a missing ID | 404 |
 
-## 2. Endpoint map (from pet-health-api_V1.0.1.yaml)
+## 2. Endpoint map (from pet-health-api.yaml)
 
 ```mermaid
 flowchart TB
@@ -76,7 +78,7 @@ flowchart TB
     pet --> ap --> apId
 ```
 
-## 3. Schemas (from pet-health-api_V1.0.1.yaml)
+## 3. Schemas (from pet-health-api.yaml)
 
 `«ro»` = `readOnly: true` (computed or generated on the server).
 

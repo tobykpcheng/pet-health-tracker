@@ -1,8 +1,11 @@
 openapi: 3.0.3
 info:
   title: Pet Health Record Manager API
-  description: REST API for managing pet profiles, health records, medications, and appointments.
-  version: 1.0.1
+  description: >-
+    REST API for managing pet profiles, health records, medications, and appointments.
+    Single-user MVP: there is no authentication and no User resource, so every pet
+    belongs to the one user of the app. Multi-user support is a future feature.
+  version: 1.0.0
 
 servers:
   - url: http://localhost:8080
@@ -37,6 +40,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Pet'
+        '400':
+          description: Invalid request body (missing required field or invalid value)
 
   /pets/{id}:
     parameters:
@@ -73,6 +78,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Pet'
+        '400':
+          description: Invalid request body (missing required field or invalid value)
         '404':
           description: Pet not found
 
@@ -103,6 +110,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/HealthRecord'
+        '404':
+          description: Pet not found
 
     post:
       summary: Add a new health record for a pet
@@ -119,6 +128,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HealthRecord'
+        '400':
+          description: Invalid request body (missing required field or invalid value)
+        '404':
+          description: Pet not found
 
   /pets/{pet_id}/health_record/{record_id}:
     parameters:
@@ -160,6 +173,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HealthRecord'
+        '400':
+          description: Invalid request body (missing required field or invalid value)
         '404':
           description: Health record not found
 
@@ -190,6 +205,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Medication'
+        '404':
+          description: Pet not found
 
     post:
       summary: Add a medication for a pet
@@ -206,6 +223,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Medication'
+        '400':
+          description: Invalid request body (missing required field or invalid value)
+        '404':
+          description: Pet not found
 
   /pets/{pet_id}/medication/{medication_id}:
     parameters:
@@ -247,6 +268,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Medication'
+        '400':
+          description: Invalid request body (missing required field or invalid value)
         '404':
           description: Medication not found
 
@@ -277,6 +300,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Appointment'
+        '404':
+          description: Pet not found
 
     post:
       summary: Add an appointment for a pet
@@ -293,6 +318,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Appointment'
+        '400':
+          description: Invalid request body (missing required field or invalid value)
+        '404':
+          description: Pet not found
 
   /pets/{pet_id}/appointment/{appointment_id}:
     parameters:
@@ -334,6 +363,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Appointment'
+        '400':
+          description: Invalid request body (missing required field or invalid value)
         '404':
           description: Appointment not found
 
@@ -349,6 +380,7 @@ components:
   schemas:
     Pet:
       type: object
+      required: [name, species]
       properties:
         id:
           type: integer
@@ -370,6 +402,7 @@ components:
         weight:
           type: number
           format: double
+          description: Weight in pounds (lb)
           example: 10
         gender:
           type: string
@@ -381,14 +414,17 @@ components:
         ageYears:
           type: integer
           readOnly: true
+          description: Calculated from birthDate; not stored
           example: 3
         ageMonths:
           type: integer
           readOnly: true
+          description: Calculated from birthDate; not stored
           example: 9
 
     HealthRecord:
       type: object
+      required: [recordDate, recordType]
       properties:
         id:
           type: integer
@@ -411,6 +447,7 @@ components:
 
     Medication:
       type: object
+      required: [medicineName, startDate]
       properties:
         id:
           type: integer
@@ -434,6 +471,7 @@ components:
         isActive:
           type: boolean
           readOnly: true
+          description: Calculated; true when endDate is null or not yet passed. Not stored
           example: true
         doseFrequency:
           type: string
@@ -441,6 +479,7 @@ components:
 
     Appointment:
       type: object
+      required: [appointmentDate, appointmentTime, status]
       properties:
         id:
           type: integer
@@ -452,6 +491,8 @@ components:
           example: "2025-09-15"
         appointmentTime:
           type: string
+          description: 24-hour time, HH:mm
+          pattern: '^([01]\d|2[0-3]):[0-5]\d$'
           example: "13:30"
         clinicName:
           type: string

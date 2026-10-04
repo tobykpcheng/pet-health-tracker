@@ -1,58 +1,60 @@
 # Pet Health Tracker — Database Design (ERD)
 
-Converted from `designs/db-design/Pet Health - ERD.png`. Entities, keys, attributes and relationships are as drawn.
-The original diagram has no data types, so the types below are **inferred** (Mermaid requires one per attribute).
+Matches `designs/api-design/pet-health-api.yaml`. Database columns use `snake_case` and API fields use `camelCase` (JPA maps one to the other).
+
+**Single-user MVP:** there is no `USER` table. The app has one user, so pets aren't linked to an owner. Multi-user support (a `USER` table plus `pet.user_id`) is a future feature.
 
 ```mermaid
 erDiagram
-    USER ||--o{ PET : owns
     PET  ||--o{ HEALTH_RECORD : has
     PET  ||--o{ MEDICATION : takes
     PET  ||--o{ APPOINTMENT : has
 
-    USER {
-        int    user_id PK
-        string email
-        string password
-        string user_name "drawn as 'user name'"
-    }
-
     PET {
-        int    pet_id PK
-        int    user_id FK
-        string name
-        string species
-        string breed
-        date   birth_date
-        double weight
+        bigint  pet_id PK
+        varchar name "NOT NULL"
+        varchar species "NOT NULL"
+        varchar breed
+        date    birth_date
+        decimal weight_lb
+        varchar gender "MALE | FEMALE"
+        boolean spayed_neutered
     }
 
     HEALTH_RECORD {
-        int    record_id PK
-        int    pet_id FK
-        date   record_date
-        string record_type
-        string clinic_name
-        string notes
+        bigint  record_id PK
+        bigint  pet_id FK "NOT NULL, ON DELETE CASCADE"
+        date    record_date "NOT NULL"
+        varchar record_type "NOT NULL: VACCINATION | CHECK_UP | ILLNESS | SURGERY | TEST_LAB | OTHER"
+        varchar clinic_name
+        text    notes
     }
 
     MEDICATION {
-        int    medication_id PK
-        int    pet_id FK
-        string medicine_name
-        string dosage
-        date   start_date
-        date   end_date
+        bigint  medication_id PK
+        bigint  pet_id FK "NOT NULL, ON DELETE CASCADE"
+        varchar medicine_name "NOT NULL"
+        varchar dosage
+        varchar dose_frequency
+        date    start_date "NOT NULL"
+        date    end_date "nullable: null = ongoing"
     }
 
     APPOINTMENT {
-        int    appointment_id PK
-        int    pet_id FK
-        date   appointment_date
-        string clinic_name
-        string visit_reason
-        string notes
+        bigint  appointment_id PK
+        bigint  pet_id FK "NOT NULL, ON DELETE CASCADE"
+        date    appointment_date "NOT NULL"
+        time    appointment_time "NOT NULL"
+        varchar clinic_name
+        varchar visit_reason
+        text    notes
+        varchar status "NOT NULL: UPCOMING | COMPLETED | CANCELLED"
     }
 ```
 
-Relationship notes: the PNG uses crow's-foot "one-or-many" (`|<`) on the child side. That's rendered here as zero-or-many (`o{`), because a new user has no pets yet and a new pet has no records. If you really mean "at least one", change `o{` to `|{`.
+## Notes
+
+- **Enums** (`gender`, `record_type`, `status`) are stored as strings with the same values as the API. Add a `CHECK` constraint for each; with JPA, use `@Enumerated(EnumType.STRING)`.
+- **Calculated, not stored:** the API's `ageYears`/`ageMonths` come from `birth_date`, and `isActive` is true when `end_date` is null or hasn't passed yet.
+- **Deleting a pet** deletes its health records, medications and appointments (`ON DELETE CASCADE`, or JPA `cascade = CascadeType.REMOVE, orphanRemoval = true`).
+- **Relationships** are zero-or-many (`o{`): a new pet has no records yet.
