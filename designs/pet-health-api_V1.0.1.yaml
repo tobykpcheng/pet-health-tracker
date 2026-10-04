@@ -1,0 +1,468 @@
+openapi: 3.0.3
+info:
+  title: Pet Health Record Manager API
+  description: REST API for managing pet profiles, health records, medications, and appointments.
+  version: 1.0.1
+
+servers:
+  - url: http://localhost:8080
+    description: Local Spring Boot server
+
+paths:
+  /pets:
+    get:
+      summary: List all pets
+      responses:
+        '200':
+          description: A list of pets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Pet'
+
+    post:
+      summary: Create a new pet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pet'
+      responses:
+        '201':
+          description: Pet created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pet'
+
+  /pets/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+
+    get:
+      summary: Get a pet by id
+      responses:
+        '200':
+          description: Pet found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pet'
+        '404':
+          description: Pet not found
+
+    put:
+      summary: Update an existing pet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pet'
+      responses:
+        '200':
+          description: Pet updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pet'
+        '404':
+          description: Pet not found
+
+    delete:
+      summary: Delete a pet
+      responses:
+        '204':
+          description: Pet deleted successfully
+        '404':
+          description: Pet not found
+
+  /pets/{pet_id}/health_record:
+    parameters:
+      - name: pet_id
+        in: path
+        required: true
+        schema:
+          type: integer
+
+    get:
+      summary: List health records for a pet
+      responses:
+        '200':
+          description: A list of health records
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/HealthRecord'
+
+    post:
+      summary: Add a new health record for a pet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HealthRecord'
+      responses:
+        '201':
+          description: Health record created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthRecord'
+
+  /pets/{pet_id}/health_record/{record_id}:
+    parameters:
+      - name: pet_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: record_id
+        in: path
+        required: true
+        schema:
+          type: integer
+
+    get:
+      summary: Get a health record by id for a pet
+      responses:
+        '200':
+          description: Health record found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthRecord'
+        '404':
+          description: Health record not found
+
+    put:
+      summary: Update an existing health record for a pet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HealthRecord'
+      responses:
+        '200':
+          description: Health record updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthRecord'
+        '404':
+          description: Health record not found
+
+    delete:
+      summary: Delete a health record for a pet
+      responses:
+        '204':
+          description: Health record deleted successfully
+        '404':
+          description: Health record not found
+
+  /pets/{pet_id}/medication:
+    parameters:
+      - name: pet_id
+        in: path
+        required: true
+        schema:
+          type: integer
+
+    get:
+      summary: List medications for a pet
+      responses:
+        '200':
+          description: A list of medications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Medication'
+
+    post:
+      summary: Add a medication for a pet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Medication'
+      responses:
+        '201':
+          description: Medication added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Medication'
+
+  /pets/{pet_id}/medication/{medication_id}:
+    parameters:
+      - name: pet_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: medication_id
+        in: path
+        required: true
+        schema:
+          type: integer
+
+    get:
+      summary: Get a medication by id for a pet
+      responses:
+        '200':
+          description: Medication found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Medication'
+        '404':
+          description: Medication not found
+
+    put:
+      summary: Update an existing medication for a pet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Medication'
+      responses:
+        '200':
+          description: Medication updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Medication'
+        '404':
+          description: Medication not found
+
+    delete:
+      summary: Delete a medication for a pet
+      responses:
+        '204':
+          description: Medication deleted successfully
+        '404':
+          description: Medication not found
+
+  /pets/{pet_id}/appointment:
+    parameters:
+      - name: pet_id
+        in: path
+        required: true
+        schema:
+          type: integer
+
+    get:
+      summary: List appointments for a pet
+      responses:
+        '200':
+          description: A list of appointments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Appointment'
+
+    post:
+      summary: Add an appointment for a pet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Appointment'
+      responses:
+        '201':
+          description: Appointment added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Appointment'
+
+  /pets/{pet_id}/appointment/{appointment_id}:
+    parameters:
+      - name: pet_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: appointment_id
+        in: path
+        required: true
+        schema:
+          type: integer
+
+    get:
+      summary: Get an appointment by id for a pet
+      responses:
+        '200':
+          description: Appointment found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Appointment'
+        '404':
+          description: Appointment not found
+
+    put:
+      summary: Update an existing appointment for a pet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Appointment'
+      responses:
+        '200':
+          description: Appointment updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Appointment'
+        '404':
+          description: Appointment not found
+
+    delete:
+      summary: Delete an existing appointment
+      responses:
+        '204':
+          description: Appointment deleted successfully
+        '404':
+          description: Appointment not found
+
+components:
+  schemas:
+    Pet:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          example: 1
+        name:
+          type: string
+          example: Maru
+        species:
+          type: string
+          example: Dog
+        breed:
+          type: string
+          example: Maltipoo
+        birthDate:
+          type: string
+          format: date
+          example: "2022-11-12"
+        weight:
+          type: number
+          format: double
+          example: 10
+        gender:
+          type: string
+          enum: [MALE, FEMALE]
+          example: MALE
+        spayedNeutered:
+          type: boolean
+          example: true
+        ageYears:
+          type: integer
+          readOnly: true
+          example: 3
+        ageMonths:
+          type: integer
+          readOnly: true
+          example: 9
+
+    HealthRecord:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          example: 1
+        recordDate:
+          type: string
+          format: date
+          example: "2025-07-15"
+        recordType:
+          type: string
+          enum: [VACCINATION, CHECK_UP, ILLNESS, SURGERY, TEST_LAB, OTHER]
+          example: CHECK_UP
+        clinicName:
+          type: string
+          example: A Niu Veterinary Hospital
+        notes:
+          type: string
+          example: General examination
+
+    Medication:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          example: 1
+        medicineName:
+          type: string
+          example: Simparica Trio
+        dosage:
+          type: string
+          example: 30 mg
+        startDate:
+          type: string
+          format: date
+          example: "2025-07-15"
+        endDate:
+          type: string
+          format: date
+          nullable: true
+          example: null
+        isActive:
+          type: boolean
+          readOnly: true
+          example: true
+        doseFrequency:
+          type: string
+          example: Every 30 days
+
+    Appointment:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          example: 1
+        appointmentDate:
+          type: string
+          format: date
+          example: "2025-09-15"
+        appointmentTime:
+          type: string
+          example: "13:30"
+        clinicName:
+          type: string
+          example: Burquitlam Animal Hospital
+        visitReason:
+          type: string
+          example: Vaccination
+        notes:
+          type: string
+          example: Rabies vaccination
+        status:
+          type: string
+          enum: [UPCOMING, COMPLETED, CANCELLED]
+          example: COMPLETED
