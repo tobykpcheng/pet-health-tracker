@@ -36,16 +36,16 @@ gender: MALE
 spayedNeutered: true
 
 # POST /pets/{pet_id}/health_record
-recordDate: "2026-08-15"
+recordDate: "2026-06-20"
 recordType: CHECK_UP  # UI label "Check-up"
-clinicName: A Niu
-notes: Lorem ipsum dolor sit amet
+clinicName: A Niu Veterinary Hospital
+notes: General examination
 
 # PUT /pets/{pet_id}/health_record/{record_id}
 recordDate: "2025-09-28"
-recordType: OTHER
+recordType: VACCINATION  # UI label "Vaccination"
 clinicName: Burquitlam Animal Hospital
-notes: Lorem ipsum dolor sit amet
+notes: Rabies vaccination
 ```
 
 ### Status codes
@@ -57,20 +57,20 @@ notes: Lorem ipsum dolor sit amet
 | PUT succeeds | 200 |
 | DELETE succeeds | 204 |
 | Bad / invalid data | 400 |
-| GET/PUT/DELETE on a missing ID | 404 |
+| Any request whose pet ID or child ID doesn't exist | 404 |
 
 ## 2. Endpoint map (from pet-health-api.yaml)
 
 ```mermaid
 flowchart TB
-    root["/pets<br/>GET 200 · POST 201"]
-    pet["/pets/{id}<br/>GET 200/404 · PUT 200/404 · DELETE 204/404"]
-    hr["/pets/{pet_id}/health_record<br/>GET 200 · POST 201"]
-    hrId["/pets/{pet_id}/health_record/{record_id}<br/>GET · PUT · DELETE"]
-    med["/pets/{pet_id}/medication<br/>GET 200 · POST 201"]
-    medId["/pets/{pet_id}/medication/{medication_id}<br/>GET · PUT · DELETE"]
-    ap["/pets/{pet_id}/appointment<br/>GET 200 · POST 201"]
-    apId["/pets/{pet_id}/appointment/{appointment_id}<br/>GET · PUT · DELETE"]
+    root["/pets<br/>GET 200 · POST 201/400"]
+    pet["/pets/{id}<br/>GET 200/404 · PUT 200/400/404 · DELETE 204/404"]
+    hr["/pets/{pet_id}/health_record<br/>GET 200/404 · POST 201/400/404"]
+    hrId["/pets/{pet_id}/health_record/{record_id}<br/>GET 200/404 · PUT 200/400/404 · DELETE 204/404"]
+    med["/pets/{pet_id}/medication<br/>GET 200/404 · POST 201/400/404"]
+    medId["/pets/{pet_id}/medication/{medication_id}<br/>GET 200/404 · PUT 200/400/404 · DELETE 204/404"]
+    ap["/pets/{pet_id}/appointment<br/>GET 200/404 · POST 201/400/404"]
+    apId["/pets/{pet_id}/appointment/{appointment_id}<br/>GET 200/404 · PUT 200/400/404 · DELETE 204/404"]
 
     root --> pet
     pet --> hr --> hrId

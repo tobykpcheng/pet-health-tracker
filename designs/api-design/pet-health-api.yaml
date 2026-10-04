@@ -369,7 +369,7 @@ paths:
           description: Appointment not found
 
     delete:
-      summary: Delete an existing appointment
+      summary: Delete an appointment for a pet
       responses:
         '204':
           description: Appointment deleted successfully
