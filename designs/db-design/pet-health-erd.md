@@ -55,6 +55,5 @@ erDiagram
 ## Notes
 
 - **Enums** (`gender`, `record_type`, `status`) are stored as strings with the same values as the API. Add a `CHECK` constraint for each; with JPA, use `@Enumerated(EnumType.STRING)`.
-- **Calculated, not stored:** the API's `ageYears`/`ageMonths` come from `birth_date`, and `isActive` is true when `end_date` is null or hasn't passed yet.
 - **Deleting a pet** deletes its health records, medications and appointments (`ON DELETE CASCADE`, or JPA `cascade = CascadeType.REMOVE, orphanRemoval = true`).
 - **Relationships** are zero-or-many (`o{`): a new pet has no records yet.
