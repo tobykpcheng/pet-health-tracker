@@ -8,5 +8,5 @@
 ## Stack
 
 - **Backend:** Java Spring
-- **Frontend:** HTML / CSS / jQuery / JavaScript
+- **Frontend:** React (built with Vite)
 - **Database:** Microsoft SQL Server
