@@ -22,7 +22,9 @@ Requirements: SQL Server 2022 and SQL Server Management Studio (SSMS), with SQL 
 
    ```sql
    CREATE DATABASE pet_health_tracker;
+   GO
    CREATE LOGIN pethealth_app WITH PASSWORD = '<your-password>';
+   GO
    USE pet_health_tracker;
    CREATE USER pethealth_app FOR LOGIN pethealth_app;
    ALTER ROLE db_owner ADD MEMBER pethealth_app;
