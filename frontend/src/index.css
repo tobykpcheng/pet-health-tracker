@@ -6,6 +6,11 @@
   --input-border: #b9b4f0;
   --save: #8a96f0;
   --cancel: #f08a8a;
+  --edit: #f5b731;
+  --delete: #e53935;
+  --health: #c0504d;
+  --medication: #3c9a3c;
+  --appointments: #c42bc4;
   --error: #c62828;
   --muted: #666;
 
@@ -160,6 +165,104 @@ h1 {
 .button:disabled {
   opacity: 0.6;
   cursor: default;
+}
+
+.button.edit {
+  background: var(--edit);
+  text-decoration: none;
+}
+
+.button.delete {
+  background: var(--delete);
+}
+
+.view-profile {
+  display: block;
+  margin-top: 10px;
+  text-align: center;
+  color: var(--title);
+  font-size: 0.9rem;
+}
+
+.back-link {
+  display: inline-block;
+  margin-top: 16px;
+  color: var(--title);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.profile {
+  max-width: 520px;
+  margin: 8px auto 0;
+  padding: 20px 28px 28px;
+}
+
+.profile h1 {
+  margin: 0 0 16px;
+}
+
+.pet-details {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 4px 16px;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.pet-details dt {
+  color: var(--muted);
+}
+
+.pet-details dd {
+  margin: 0;
+}
+
+.record-section {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #ccc;
+}
+
+.record-section h2 {
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0 0 8px;
+}
+
+.record-section.health h2 {
+  color: var(--health);
+}
+
+.record-section.medication h2 {
+  color: var(--medication);
+}
+
+.record-section.appointments h2 {
+  color: var(--appointments);
+}
+
+.record-section ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 0.85rem;
+}
+
+.record-section .status {
+  text-align: left;
+  font-size: 0.85rem;
+}
+
+.tag {
+  margin-left: 8px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: #ddd;
+  font-size: 0.75rem;
 }
 
 .status {
