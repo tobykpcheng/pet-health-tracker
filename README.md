@@ -53,4 +53,19 @@ Requirements: JDK 17 or newer, with `JAVA_HOME` pointing at the JDK folder (for 
    ./mvnw test
    ```
 
-So far only the `/pets` endpoints are built. Health records, medications and appointments come next.
+### Frontend (React + Vite)
+
+Requirements: Node.js 20 or newer.
+
+1. Start the backend first (see above), so the app has an API to call.
+2. In a second terminal, install the packages and start the dev server from the `frontend` folder:
+
+   ```bash
+   cd frontend
+   npm install
+   npm run dev
+   ```
+
+3. Open http://localhost:5173. The app calls the backend at http://localhost:8080. To use another address, create `frontend/.env.local` with a line like `VITE_API_URL=http://localhost:8081`.
+
+So far the frontend has the pet list and the Add Pet form.

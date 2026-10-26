@@ -1,0 +1,173 @@
+/* Colours and layout follow designs/ui-design/Pet Health Tracker.png */
+:root {
+  --title: #3b2fc9;
+  --line: #a9c4f5;
+  --card: #eeeeee;
+  --input-border: #b9b4f0;
+  --save: #8a96f0;
+  --cancel: #f08a8a;
+  --error: #c62828;
+  --muted: #666;
+
+  font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+  color: #222;
+  background: #fff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.header {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 16px 12px;
+  border-bottom: 2px solid var(--line);
+  text-align: center;
+}
+
+.header-title {
+  color: var(--title);
+  font-size: 1.25rem;
+  text-decoration: none;
+  letter-spacing: 0.03em;
+}
+
+main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 16px 48px;
+}
+
+h1 {
+  color: var(--title);
+  font-size: 1.2rem;
+  font-weight: 500;
+  text-align: center;
+  margin: 24px 0;
+}
+
+.card {
+  background: var(--card);
+  border-radius: 4px;
+  padding: 16px 20px;
+}
+
+.pet-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.pet-card {
+  width: 100%;
+  max-width: 360px;
+}
+
+.pet-card h2 {
+  color: var(--title);
+  font-size: 1.1rem;
+  font-weight: 500;
+  text-align: center;
+  margin: 0 0 8px;
+}
+
+.pet-card p {
+  margin: 2px 0;
+  font-size: 0.9rem;
+}
+
+.add-pet-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 200px;
+  color: var(--title);
+  text-decoration: none;
+}
+
+.add-pet-card:hover {
+  background: #e2e2e2;
+}
+
+.plus {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.pet-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 28px;
+}
+
+.pet-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.pet-form input,
+.pet-form select {
+  font: inherit;
+  color: #222;
+  padding: 6px 8px;
+  border: 1px solid var(--input-border);
+  border-radius: 2px;
+  background: #fff;
+}
+
+.pet-form input:focus,
+.pet-form select:focus {
+  outline: 2px solid var(--title);
+  outline-offset: -1px;
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.button {
+  font: inherit;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 6px 28px;
+  cursor: pointer;
+}
+
+.button.save {
+  background: var(--save);
+}
+
+.button.cancel {
+  background: var(--cancel);
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.status {
+  text-align: center;
+  color: var(--muted);
+}
+
+.error {
+  color: var(--error);
+  text-align: center;
+}
