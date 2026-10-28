@@ -1,22 +1,14 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import { listPets } from '../api/pets.js'
-
-const SPECIES_EMOJI = { dog: '🐶', cat: '🐱' }
-
-// "3 yrs 9 mos", "9 mos", or null when the pet has no birth date.
-function formatAge(pet) {
-  if (pet.ageYears == null) return null
-  if (pet.ageYears === 0) return `${pet.ageMonths} mos`
-  return `${pet.ageYears} yrs ${pet.ageMonths} mos`
-}
+import { formatAge, speciesEmoji } from '../format.js'
 
 function PetCard({ pet }) {
   const age = formatAge(pet)
   return (
     <article className="card pet-card">
       <h2>
-        <span aria-hidden="true">{SPECIES_EMOJI[pet.species.toLowerCase()] ?? '🐾'}</span> {pet.name}
+        <span aria-hidden="true">{speciesEmoji(pet.species)}</span> {pet.name}
       </h2>
       <p>
         {pet.species}
@@ -24,6 +16,9 @@ function PetCard({ pet }) {
       </p>
       {age && <p>Age: {age}</p>}
       {pet.weight != null && <p>Weight: {pet.weight} lb</p>}
+      <Link to={`/pets/${pet.id}`} className="view-profile">
+        View Profile
+      </Link>
     </article>
   )
 }
