@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
 import { deletePet, getPet } from '../api/pets.js'
-import { listAppointments, listHealthRecords, listMedications } from '../api/petRecords.js'
+import { appointmentApi, healthRecordApi, medicationApi } from '../api/petRecords.js'
 import {
   APPOINTMENT_STATUS_LABELS,
   RECORD_TYPE_LABELS,
@@ -53,8 +53,10 @@ function PetDetails({ pet }) {
   )
 }
 
-// One coloured section (health records, medication or appointments) with its list of items.
-function RecordSection({ title, className, items, emptyText, renderItem }) {
+// One coloured section (health records, medication or appointments) with its list of items,
+// an Edit and Delete button on each item, and an Add button at the bottom.
+// `kind` is the URL segment for this kind of record, e.g. "health_record".
+function RecordSection({ petId, kind, title, addLabel, className, items, emptyText, renderItem, onDelete }) {
   return (
     <section className={`record-section ${className}`}>
       <h2>{title}</h2>
@@ -63,10 +65,21 @@ function RecordSection({ title, className, items, emptyText, renderItem }) {
       ) : (
         <ul>
           {items.map((item) => (
-            <li key={item.id}>{renderItem(item)}</li>
+            <li key={item.id}>
+              <div className="record-item">{renderItem(item)}</div>
+              <div className="record-actions">
+                <Link to={`/pets/${petId}/${kind}/${item.id}/edit`}>Edit</Link>
+                <button type="button" className="link-button" onClick={() => onDelete(item)}>
+                  Delete
+                </button>
+              </div>
+            </li>
           ))}
         </ul>
       )}
+      <Link to={`/pets/${petId}/${kind}/new`} className="button add-record">
+        + {addLabel}
+      </Link>
     </section>
   )
 }
@@ -78,11 +91,29 @@ export default function PetProfilePage() {
   const [error, setError] = useState(null)
 
   // Load the pet and its three lists at the same time.
-  useEffect(() => {
-    Promise.all([getPet(id), listHealthRecords(id), listMedications(id), listAppointments(id)])
+  // useCallback keeps the same function between renders, so the effect below runs only when id changes.
+  const loadAll = useCallback(() => {
+    return Promise.all([getPet(id), healthRecordApi.list(id), medicationApi.list(id), appointmentApi.list(id)])
       .then(([pet, records, medications, appointments]) => setData({ pet, records, medications, appointments }))
       .catch((err) => setError(err.message))
   }, [id])
+
+  useEffect(() => {
+    loadAll()
+  }, [loadAll])
+
+  // Returns the delete handler for one kind of record: confirm, delete, then reload the lists.
+  function deleteRecord(api, describe) {
+    return async (item) => {
+      if (!window.confirm(`Delete ${describe(item)}?`)) return
+      try {
+        await api.remove(id, item.id)
+        await loadAll()
+      } catch (err) {
+        setError(err.message)
+      }
+    }
+  }
 
   async function handleDelete() {
     const confirmed = window.confirm(
@@ -127,10 +158,17 @@ export default function PetProfilePage() {
         </div>
 
         <RecordSection
+          petId={id}
+          kind="health_record"
           title="Health records"
+          addLabel="Add health record"
           className="health"
           items={records}
           emptyText="No health records yet."
+          onDelete={deleteRecord(
+            healthRecordApi,
+            (r) => `the ${RECORD_TYPE_LABELS[r.recordType]} record from ${formatDate(r.recordDate)}`,
+          )}
           renderItem={(record) => (
             <>
               <strong>{formatDate(record.recordDate)}</strong> · {RECORD_TYPE_LABELS[record.recordType]}
@@ -141,10 +179,14 @@ export default function PetProfilePage() {
         />
 
         <RecordSection
+          petId={id}
+          kind="medication"
           title="Medication"
+          addLabel="Add medication"
           className="medication"
           items={medications}
           emptyText="No medications yet."
+          onDelete={deleteRecord(medicationApi, (m) => m.medicineName)}
           renderItem={(med) => (
             <>
               <strong>{med.medicineName}</strong>
@@ -160,10 +202,17 @@ export default function PetProfilePage() {
         />
 
         <RecordSection
+          petId={id}
+          kind="appointment"
           title="Appointments"
+          addLabel="Add appointment"
           className="appointments"
           items={appointments}
           emptyText="No appointments yet."
+          onDelete={deleteRecord(
+            appointmentApi,
+            (a) => `the appointment on ${formatDate(a.appointmentDate)} at ${a.appointmentTime}`,
+          )}
           renderItem={(appt) => (
             <>
               <strong>
