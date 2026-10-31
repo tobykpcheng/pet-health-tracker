@@ -110,7 +110,7 @@ classDiagram
         date startDate
         date endDate ‹nullable›
         boolean isActive «ro»
-        string doseFrequency
+        string directionsForUse
     }
     class Appointment {
         integer id «ro»

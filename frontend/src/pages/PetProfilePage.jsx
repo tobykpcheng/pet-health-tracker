@@ -191,7 +191,7 @@ export default function PetProfilePage() {
             <>
               <strong>{med.medicineName}</strong>
               {med.dosage && ` · ${med.dosage}`}
-              {med.doseFrequency && ` · ${med.doseFrequency}`}
+              {med.directionsForUse && ` · ${med.directionsForUse}`}
               {!med.isActive && <span className="tag">Ended</span>}
               <div>
                 From {formatDate(med.startDate)}

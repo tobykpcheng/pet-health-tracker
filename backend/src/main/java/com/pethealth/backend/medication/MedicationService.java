@@ -41,7 +41,7 @@ public class MedicationService {
         Medication medication = findById(petId, medicationId);
         medication.setMedicineName(changes.getMedicineName());
         medication.setDosage(changes.getDosage());
-        medication.setDoseFrequency(changes.getDoseFrequency());
+        medication.setDirectionsForUse(changes.getDirectionsForUse());
         medication.setStartDate(changes.getStartDate());
         medication.setEndDate(changes.getEndDate());
         return medication;

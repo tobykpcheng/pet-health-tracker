@@ -35,7 +35,7 @@ erDiagram
         bigint  pet_id FK "NOT NULL, ON DELETE CASCADE"
         varchar medicine_name "NOT NULL"
         varchar dosage
-        varchar dose_frequency
+        varchar directions_for_use
         date    start_date "NOT NULL"
         date    end_date "nullable: null = ongoing"
     }

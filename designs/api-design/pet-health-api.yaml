@@ -473,7 +473,7 @@ components:
           readOnly: true
           description: Calculated; true when endDate is null or not yet passed. Not stored
           example: true
-        doseFrequency:
+        directionsForUse:
           type: string
           example: Every 30 days
 
