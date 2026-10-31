@@ -48,13 +48,13 @@ erDiagram
         varchar clinic_name
         varchar visit_reason
         text    notes
-        varchar status "NOT NULL: UPCOMING | COMPLETED | CANCELLED"
+        bit     cancelled "NOT NULL, default 0"
     }
 ```
 
 ## Notes
 
 - **Column names that don't follow the camelCase → snake_case rule** need an explicit `@Column(name = ...)`: API `id` → `pet_id` / `record_id` / `medication_id` / `appointment_id`, and API `weight` → `weight_lb`.
-- **Enums** (`gender`, `record_type`, `status`) are stored as strings with the same values as the API. Add a `CHECK` constraint for each; with JPA, use `@Enumerated(EnumType.STRING)`.
+- **Enums** (`gender`, `record_type`) are stored as strings with the same values as the API. Add a `CHECK` constraint for each; with JPA, use `@Enumerated(EnumType.STRING)`.
 - **Deleting a pet** deletes its health records, medications and appointments (`ON DELETE CASCADE`, or JPA `cascade = CascadeType.REMOVE, orphanRemoval = true`).
 - **Relationships** are zero-or-many (`o{`): a new pet has no records yet.

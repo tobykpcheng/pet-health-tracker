@@ -1,16 +1,24 @@
 import { useState } from 'react'
 
-// The form keeps every field as a string ('' when empty)...
+// The form keeps every field as a string ('' when empty), except checkboxes, which are true/false...
 function toForm(fields, record) {
-  return Object.fromEntries(fields.map((f) => [f.name, record?.[f.name] ?? f.defaultValue ?? '']))
+  return Object.fromEntries(
+    fields.map((f) => [f.name, record?.[f.name] ?? f.defaultValue ?? (f.type === 'checkbox' ? false : '')]),
+  )
 }
 
 // ...and sends null for empty fields, with text trimmed.
 function toRecord(fields, form) {
-  return Object.fromEntries(fields.map((f) => [f.name, form[f.name].trim() || null]))
+  return Object.fromEntries(
+    fields.map((f) => [f.name, f.type === 'checkbox' ? form[f.name] : form[f.name].trim() || null]),
+  )
 }
 
 function FieldInput({ field, form, onChange }) {
+  if (field.type === 'checkbox') {
+    return <input type="checkbox" name={field.name} checked={form[field.name]} onChange={onChange} />
+  }
+
   const common = {
     name: field.name,
     value: form[field.name],
@@ -56,8 +64,8 @@ export default function RecordForm({ fields, initialRecord, onSave, onCancel }) 
   const [error, setError] = useState(null)
 
   function handleChange(event) {
-    const { name, value } = event.target
-    setForm({ ...form, [name]: value })
+    const { name, type, value, checked } = event.target
+    setForm({ ...form, [name]: type === 'checkbox' ? checked : value })
   }
 
   async function handleSubmit(event) {
@@ -74,13 +82,20 @@ export default function RecordForm({ fields, initialRecord, onSave, onCancel }) 
 
   return (
     <form className="card pet-form" onSubmit={handleSubmit}>
-      {fields.map((field) => (
-        <label key={field.name}>
-          {field.label}
-          {field.required && ' *'}
-          <FieldInput field={field} form={form} onChange={handleChange} />
-        </label>
-      ))}
+      {fields.map((field) =>
+        field.type === 'checkbox' ? (
+          <label key={field.name} className="checkbox-label">
+            <FieldInput field={field} form={form} onChange={handleChange} />
+            {field.label}
+          </label>
+        ) : (
+          <label key={field.name}>
+            {field.label}
+            {field.required && ' *'}
+            <FieldInput field={field} form={form} onChange={handleChange} />
+          </label>
+        ),
+      )}
 
       {error && <p className="error">Couldn't save: {error}</p>}
 

@@ -32,7 +32,7 @@ class AppointmentControllerTests {
     private static final String RABIES_SHOT = """
             {"appointmentDate": "2025-09-15", "appointmentTime": "13:30",
              "clinicName": "Burquitlam Animal Hospital", "visitReason": "Vaccination",
-             "notes": "Rabies vaccination", "status": "COMPLETED"}
+             "notes": "Rabies vaccination"}
             """;
 
     @Autowired
@@ -64,7 +64,6 @@ class AppointmentControllerTests {
         appointment.setPet(petRepository.findById(forPetId).orElseThrow());
         appointment.setAppointmentDate(date);
         appointment.setAppointmentTime(time);
-        appointment.setStatus(AppointmentStatus.UPCOMING);
         return appointmentRepository.save(appointment).getId();
     }
 
@@ -75,29 +74,35 @@ class AppointmentControllerTests {
                 .andExpect(jsonPath("$.id", notNullValue()))
                 .andExpect(jsonPath("$.appointmentDate").value("2025-09-15"))
                 .andExpect(jsonPath("$.appointmentTime").value("13:30"))
-                .andExpect(jsonPath("$.status").value("COMPLETED"));
+                .andExpect(jsonPath("$.cancelled").value(false))
+                .andExpect(jsonPath("$.status").value("PAST"));
     }
 
     @Test
-    void createWithoutStatusReturns400() throws Exception {
+    void futureAppointmentIsUpcomingAndSentStatusIsIgnored() throws Exception {
+        String nextYear = LocalDate.now().plusYears(1).toString();
         mockMvc.perform(post(url()).contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"appointmentDate\": \"2025-09-15\", \"appointmentTime\": \"13:30\"}"))
-                .andExpect(status().isBadRequest());
+                        .content("{\"appointmentDate\": \"" + nextYear + "\", \"appointmentTime\": \"09:00\","
+                                + " \"status\": \"PAST\"}"))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.status").value("UPCOMING"));
+    }
+
+    @Test
+    void cancelledAppointmentIsCancelled() throws Exception {
+        String nextYear = LocalDate.now().plusYears(1).toString();
+        mockMvc.perform(post(url()).contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"appointmentDate\": \"" + nextYear + "\", \"appointmentTime\": \"09:00\","
+                                + " \"cancelled\": true}"))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.cancelled").value(true))
+                .andExpect(jsonPath("$.status").value("CANCELLED"));
     }
 
     @Test
     void createWithInvalidTimeReturns400() throws Exception {
         mockMvc.perform(post(url()).contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"appointmentDate\": \"2025-09-15\", \"appointmentTime\": \"25:00\","
-                                + " \"status\": \"UPCOMING\"}"))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void createWithInvalidStatusReturns400() throws Exception {
-        mockMvc.perform(post(url()).contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"appointmentDate\": \"2025-09-15\", \"appointmentTime\": \"13:30\","
-                                + " \"status\": \"MISSED\"}"))
+                        .content("{\"appointmentDate\": \"2025-09-15\", \"appointmentTime\": \"25:00\"}"))
                 .andExpect(status().isBadRequest());
     }
 
@@ -113,13 +118,13 @@ class AppointmentControllerTests {
 
         mockMvc.perform(get(url() + "/" + id))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status").value("UPCOMING"));
+                .andExpect(jsonPath("$.status").value("PAST"));
 
         mockMvc.perform(put(url() + "/" + id).contentType(MediaType.APPLICATION_JSON).content(RABIES_SHOT))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(id))
                 .andExpect(jsonPath("$.appointmentTime").value("13:30"))
-                .andExpect(jsonPath("$.status").value("COMPLETED"));
+                .andExpect(jsonPath("$.status").value("PAST"));
 
         mockMvc.perform(delete(url() + "/" + id))
                 .andExpect(status().isNoContent());

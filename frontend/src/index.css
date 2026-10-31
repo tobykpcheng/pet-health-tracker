@@ -315,6 +315,22 @@ h1 {
   resize: vertical;
 }
 
+.tag.tag-upcoming {
+  background: #f6d6f6;
+  color: var(--appointments);
+}
+
+.tag.tag-cancelled {
+  text-decoration: line-through;
+}
+
+.pet-form .checkbox-label {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  color: #222;
+}
+
 .tag {
   margin-left: 8px;
   padding: 1px 8px;

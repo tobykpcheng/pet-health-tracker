@@ -119,7 +119,8 @@ classDiagram
         string clinicName
         string visitReason
         string notes
-        enum status [UPCOMING, COMPLETED, CANCELLED]
+        boolean cancelled
+        enum status [UPCOMING, PAST, CANCELLED] «ro»
     }
     Pet "1" --> "*" HealthRecord
     Pet "1" --> "*" Medication

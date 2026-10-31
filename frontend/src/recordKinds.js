@@ -2,14 +2,14 @@
 // RecordFormPage uses this to build the Add/Edit form for any kind, so adding a field
 // here is all it takes to show it in the form.
 import { appointmentApi, healthRecordApi, medicationApi } from './api/petRecords.js'
-import { APPOINTMENT_STATUS_LABELS, RECORD_TYPE_LABELS } from './format.js'
+import { RECORD_TYPE_LABELS } from './format.js'
 
 // { VACCINATION: 'Vaccination', ... } -> [{ value: 'VACCINATION', label: 'Vaccination' }, ...]
 function toOptions(labels) {
   return Object.entries(labels).map(([value, label]) => ({ value, label }))
 }
 
-// Field types: 'date', 'time', 'text', 'textarea' and 'select'.
+// Field types: 'date', 'time', 'text', 'textarea', 'select' and 'checkbox'.
 // The keys (health_record, medication, appointment) are also the URL segments.
 export const RECORD_KINDS = {
   health_record: {
@@ -41,7 +41,8 @@ export const RECORD_KINDS = {
       { name: 'appointmentTime', label: 'Time', type: 'time', required: true },
       { name: 'clinicName', label: 'Vet / clinic', type: 'text', maxLength: 100 },
       { name: 'visitReason', label: 'Reason for visit', type: 'text', maxLength: 255 },
-      { name: 'status', label: 'Status', type: 'select', required: true, options: toOptions(APPOINTMENT_STATUS_LABELS), defaultValue: 'UPCOMING' },
+      // Upcoming / Past is worked out from the date, so the only thing to record is a cancellation.
+      { name: 'cancelled', label: 'This appointment was cancelled', type: 'checkbox' },
       { name: 'notes', label: 'Notes', type: 'textarea' },
     ],
   },

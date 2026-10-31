@@ -479,7 +479,7 @@ components:
 
     Appointment:
       type: object
-      required: [appointmentDate, appointmentTime, status]
+      required: [appointmentDate, appointmentTime]
       properties:
         id:
           type: integer
@@ -503,7 +503,16 @@ components:
         notes:
           type: string
           example: Rabies vaccination
+        cancelled:
+          type: boolean
+          default: false
+          description: True when the appointment was cancelled
+          example: false
         status:
           type: string
-          enum: [UPCOMING, COMPLETED, CANCELLED]
-          example: COMPLETED
+          enum: [UPCOMING, PAST, CANCELLED]
+          readOnly: true
+          description: >-
+            Calculated; CANCELLED when cancelled is true, otherwise UPCOMING or PAST from the
+            appointment date and time. Not stored
+          example: PAST

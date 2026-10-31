@@ -34,8 +34,9 @@ export const RECORD_TYPE_LABELS = {
   OTHER: 'Other',
 }
 
+// The backend works out an appointment's status from its date and its cancelled flag.
 export const APPOINTMENT_STATUS_LABELS = {
   UPCOMING: 'Upcoming',
-  COMPLETED: 'Completed',
+  PAST: 'Past',
   CANCELLED: 'Cancelled',
 }

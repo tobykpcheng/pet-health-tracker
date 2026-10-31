@@ -219,7 +219,9 @@ export default function PetProfilePage() {
                 {formatDate(appt.appointmentDate)}, {appt.appointmentTime}
               </strong>
               {appt.clinicName && ` · ${appt.clinicName}`}
-              <span className="tag">{APPOINTMENT_STATUS_LABELS[appt.status]}</span>
+              <span className={`tag tag-${appt.status.toLowerCase()}`}>
+                {APPOINTMENT_STATUS_LABELS[appt.status]}
+              </span>
               {appt.visitReason && <div>Reason: {appt.visitReason}</div>}
               {appt.notes && <div>Notes: {appt.notes}</div>}
             </>
