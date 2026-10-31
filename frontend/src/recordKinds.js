@@ -28,7 +28,7 @@ export const RECORD_KINDS = {
     fields: [
       { name: 'medicineName', label: 'Medicine', type: 'text', required: true, maxLength: 100 },
       { name: 'dosage', label: 'Dosage', type: 'text', maxLength: 50, placeholder: 'e.g. 30 mg' },
-      { name: 'doseFrequency', label: 'How often', type: 'text', maxLength: 100, placeholder: 'e.g. Every 30 days' },
+      { name: 'doseFrequency', label: 'Directions for use', type: 'text', maxLength: 100, placeholder: 'e.g. 1 chewable tablet every 30 days, with food' },
       { name: 'startDate', label: 'Start date', type: 'date', required: true },
       { name: 'endDate', label: 'End date (leave empty if ongoing)', type: 'date', notBefore: 'startDate' },
     ],
