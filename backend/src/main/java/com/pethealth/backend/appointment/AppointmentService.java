@@ -44,7 +44,7 @@ public class AppointmentService {
         appointment.setClinicName(changes.getClinicName());
         appointment.setVisitReason(changes.getVisitReason());
         appointment.setNotes(changes.getNotes());
-        appointment.setStatus(changes.getStatus());
+        appointment.setCancelled(changes.isCancelled());
         return appointment;
     }
 

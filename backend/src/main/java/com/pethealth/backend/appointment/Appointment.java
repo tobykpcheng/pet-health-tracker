@@ -1,6 +1,7 @@
 package com.pethealth.backend.appointment;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import org.hibernate.annotations.OnDelete;
@@ -13,8 +14,6 @@ import com.pethealth.backend.pet.Pet;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -64,10 +63,9 @@ public class Appointment {
     @Lob
     private String notes;
 
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    private AppointmentStatus status;
+    /** True when the appointment was cancelled. Optional in the JSON body; defaults to false. */
+    @Column(nullable = false)
+    private boolean cancelled;
 
     public Long getId() {
         return id;
@@ -121,11 +119,27 @@ public class Appointment {
         this.notes = notes;
     }
 
-    public AppointmentStatus getStatus() {
-        return status;
+    public boolean isCancelled() {
+        return cancelled;
     }
 
-    public void setStatus(AppointmentStatus status) {
-        this.status = status;
+    public void setCancelled(boolean cancelled) {
+        this.cancelled = cancelled;
+    }
+
+    /**
+     * CANCELLED if cancelled, otherwise UPCOMING or PAST from the date and time.
+     * Calculated, not stored, so it can never disagree with the date.
+     */
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    public AppointmentStatus getStatus() {
+        if (cancelled) {
+            return AppointmentStatus.CANCELLED;
+        }
+        if (appointmentDate == null || appointmentTime == null) {
+            return null;
+        }
+        LocalDateTime when = LocalDateTime.of(appointmentDate, appointmentTime);
+        return when.isAfter(LocalDateTime.now()) ? AppointmentStatus.UPCOMING : AppointmentStatus.PAST;
     }
 }

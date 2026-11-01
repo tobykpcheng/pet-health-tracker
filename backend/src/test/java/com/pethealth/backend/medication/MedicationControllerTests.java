@@ -29,7 +29,7 @@ import com.pethealth.backend.pet.PetRepository;
 class MedicationControllerTests {
 
     private static final String SIMPARICA = """
-            {"medicineName": "Simparica Trio", "dosage": "30 mg", "doseFrequency": "Every 30 days",
+            {"medicineName": "Simparica Trio", "dosage": "30 mg", "directionsForUse": "Every 30 days",
              "startDate": "2025-07-15", "endDate": null}
             """;
 
@@ -72,7 +72,7 @@ class MedicationControllerTests {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", notNullValue()))
                 .andExpect(jsonPath("$.medicineName").value("Simparica Trio"))
-                .andExpect(jsonPath("$.doseFrequency").value("Every 30 days"))
+                .andExpect(jsonPath("$.directionsForUse").value("Every 30 days"))
                 .andExpect(jsonPath("$.isActive").value(true));
     }
 

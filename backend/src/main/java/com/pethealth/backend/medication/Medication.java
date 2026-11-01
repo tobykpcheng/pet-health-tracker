@@ -51,7 +51,7 @@ public class Medication {
 
     @Size(max = 100)
     @Column(length = 100)
-    private String doseFrequency;
+    private String directionsForUse;
 
     @NotNull
     @Column(nullable = false)
@@ -94,12 +94,12 @@ public class Medication {
         this.dosage = dosage;
     }
 
-    public String getDoseFrequency() {
-        return doseFrequency;
+    public String getDirectionsForUse() {
+        return directionsForUse;
     }
 
-    public void setDoseFrequency(String doseFrequency) {
-        this.doseFrequency = doseFrequency;
+    public void setDirectionsForUse(String directionsForUse) {
+        this.directionsForUse = directionsForUse;
     }
 
     public LocalDate getStartDate() {
