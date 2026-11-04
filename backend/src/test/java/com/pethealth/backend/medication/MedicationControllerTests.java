@@ -84,11 +84,31 @@ class MedicationControllerTests {
     }
 
     @Test
+    void createWithEndDateBeforeStartDateReturns400() throws Exception {
+        mockMvc.perform(post(url()).contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"medicineName\": \"Loperamide\", \"startDate\": \"2026-09-01\", \"endDate\": \"2026-08-01\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail").value("End date can't be before start date"));
+    }
+
+    @Test
+    void updateWithEndDateBeforeStartDateReturns400() throws Exception {
+        Long id = saveMedication(petId, LocalDate.of(2025, 1, 1), null);
+
+        mockMvc.perform(put(url() + "/" + id).contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"medicineName\": \"Loperamide\", \"startDate\": \"2026-10-01\", \"endDate\": \"2026-09-01\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail").value("End date can't be before start date"));
+    }
+
+
+    @Test
     void createWithoutStartDateReturns400() throws Exception {
         mockMvc.perform(post(url()).contentType(MediaType.APPLICATION_JSON)
                         .content("{\"medicineName\": \"Apoquel\"}"))
                 .andExpect(status().isBadRequest());
     }
+
 
     @Test
     void isActiveFollowsEndDate() throws Exception {

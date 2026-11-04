@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.pethealth.backend.common.NotFoundException;
+import com.pethealth.backend.common.BadRequestException;
 import com.pethealth.backend.pet.PetService;
 
 @Service
@@ -32,12 +33,14 @@ public class MedicationService {
     }
 
     public Medication create(Long petId, Medication medication) {
+        checkDates(medication);
         medication.setPet(petService.findById(petId));
         return medicationRepository.save(medication);
     }
 
     @Transactional
     public Medication update(Long petId, Long medicationId, Medication changes) {
+        checkDates(changes);
         Medication medication = findById(petId, medicationId);
         medication.setMedicineName(changes.getMedicineName());
         medication.setDosage(changes.getDosage());
@@ -49,5 +52,11 @@ public class MedicationService {
 
     public void delete(Long petId, Long medicationId) {
         medicationRepository.delete(findById(petId, medicationId));
+    }
+
+    private void checkDates(Medication medication){
+        if( medication.getEndDate() != null && medication.getEndDate().isBefore(medication.getStartDate())){
+            throw new BadRequestException("End date can't be before start date");
+        }
     }
 }
